@@ -11,5 +11,7 @@ func HandleRequest() {
 	r.GET("/:nome", controlles.Saudacao)
 	r.POST("/alunos", controlles.CriaNovoAluno)
 	r.GET("/alunos/:id", controlles.BuscarAlunoPorId)
+	r.DELETE("/alunos/:id", controlles.DeletaAluno)
+	r.PATCH("/alunos/:id", controlles.EditaAluno)
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
