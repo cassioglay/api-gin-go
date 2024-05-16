@@ -9,7 +9,11 @@ import (
 )
 
 func ExibeTodosAlunos(ctx *gin.Context) {
-	ctx.JSON(200, models.Alunos)
+	var alunos []models.Aluno
+
+	database.DB.Find(&alunos)
+
+	ctx.JSON(200, &alunos)
 }
 
 func Saudacao(ctx *gin.Context) {
@@ -30,4 +34,20 @@ func CriaNovoAluno(ctx *gin.Context) {
 
 	database.DB.Create(&aluno)
 	ctx.JSON(http.StatusOK, aluno)
+}
+
+func BuscarAlunoPorId(ctx *gin.Context) {
+	var aluno models.Aluno
+	id := ctx.Params.ByName("id")
+	database.DB.First(&aluno, id)
+
+	if aluno.ID == 0 {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"Not Found": "Aluno não econtrado",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &aluno)
+
 }
