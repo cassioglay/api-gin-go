@@ -91,7 +91,7 @@ func TestBuscaAlunoPorIdHandler(t *testing.T) {
 	assert.Equal(t, http.StatusOK, resposta.Code)
 }
 
-/* func TestDeletaAlunoHandler(t *testing.T) {
+func TestDeletaAlunoHandler(t *testing.T) {
 	database.ConectaComBancoDeDados()
 	CriaAlunoMock()
 	r := SetupDasRotasDeTeste()
@@ -101,7 +101,7 @@ func TestBuscaAlunoPorIdHandler(t *testing.T) {
 	resposta := httptest.NewRecorder()
 	r.ServeHTTP(resposta, req)
 	assert.Equal(t, http.StatusOK, resposta.Code)
-} */
+}
 
 func TestEditaUmAluno(t *testing.T) {
 	database.ConectaComBancoDeDados()

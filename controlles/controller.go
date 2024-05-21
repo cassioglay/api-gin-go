@@ -60,17 +60,8 @@ func BuscarAlunoPorId(ctx *gin.Context) {
 func DeletaAluno(ctx *gin.Context) {
 	var aluno models.Aluno
 	id := ctx.Params.ByName("id")
-
 	database.DB.Delete(&aluno, id)
-
-	if aluno.ID == 0 {
-		ctx.JSON(http.StatusNotFound, gin.H{
-			"Not Found": "Aluno não econtrado",
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, "Aluno deletado com sucesso")
+	ctx.JSON(http.StatusOK, gin.H{"data": "Aluno deletado com sucesso"})
 }
 
 func EditaAluno(ctx *gin.Context) {
@@ -90,7 +81,7 @@ func EditaAluno(ctx *gin.Context) {
 		return
 	}
 
-	database.DB.Model(&aluno).UpdateColumns(aluno)
+	database.DB.Save(&aluno)
 
 	ctx.JSON(http.StatusOK, aluno)
 }
