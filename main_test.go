@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -15,13 +16,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var ID int
+
 func SetupDasRotasDeTeste() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode) // Simplifica a visualização dos testes...
 	rotas := gin.Default()
 	return rotas
 }
-
-var ID int
 
 func CriaAlunoMock() {
 	aluno := models.Aluno{Nome: "Aluno Teste", CPF: "1234567898", RG: "12345678901"}
@@ -100,4 +101,23 @@ func TestDeletaAlunoHandler(t *testing.T) {
 	resposta := httptest.NewRecorder()
 	r.ServeHTTP(resposta, req)
 	assert.Equal(t, http.StatusOK, resposta.Code)
+}
+
+func TestEditaUmAluno(t *testing.T) {
+	database.ConectaComBancoDeDados()
+	CriaAlunoMock()
+	defer DeletaAlunoMock()
+	r := SetupDasRotasDeTeste()
+	r.PATCH("/alunos/:id", controlles.EditaAluno)
+	aluno := models.Aluno{Nome: "Aluno Teste", CPF: "405346789", RG: "12345678908"}
+	valorJson, _ := json.Marshal(aluno)
+	pathParaEditar := "/alunos/" + strconv.Itoa(ID)
+	req, _ := http.NewRequest("PATCH", pathParaEditar, bytes.NewBuffer(valorJson))
+	resposta := httptest.NewRecorder()
+	r.ServeHTTP(resposta, req)
+	var alunoMockAlualizado models.Aluno
+	json.Unmarshal(resposta.Body.Bytes(), &alunoMockAlualizado)
+	assert.Equal(t, "405346789", alunoMockAlualizado.CPF)
+	assert.Equal(t, "12345678908", alunoMockAlualizado.RG)
+	assert.Equal(t, "Aluno Teste", alunoMockAlualizado.Nome)
 }
